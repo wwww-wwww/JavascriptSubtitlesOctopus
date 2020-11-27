@@ -54,11 +54,13 @@ self.writeFontToFS = function(font) {
     self.fontMap_[font] = true;
 
     if (!self.availableFonts.hasOwnProperty(font)) return;
-    var content = self.availableFonts[font].match(/^data:/) !== null ? self.readDataUri(self.availableFonts[font]): readBinary(self.availableFonts[font]);
-
-    Module["FS"].writeFile('/fonts/font' + (self.fontId++) + '-' + self.availableFonts[font].split('/').pop(), content, {
-        encoding: 'binary'
-    });
+    for (var file of self.availableFonts[font]) {
+        var content = file.match(/^data:/) !== null ? self.readDataUri(file) : readBinary(file);
+    
+        Module["FS"].writeFile('/fonts/font' + (self.fontId++) + '-' + file.split('/').pop(), content, {
+            encoding: 'binary'
+        });
+    }
 };
 
 /**
